@@ -1,5 +1,7 @@
 package com.xworkz.crudx.dto;
 
+import com.xworkz.crudx.validator.UniqueEmailConstraint;
+import com.xworkz.crudx.validator.UniquePhoneNumberConstraint;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -21,10 +23,13 @@ public class CustomerDTO {
 
     @NotBlank
     @Pattern(regexp = "^[6-9]\\d{9}$")
+    @UniquePhoneNumberConstraint
+
     private String phoneNumber;
 
     @NotBlank
     @Email
+    @UniqueEmailConstraint
     private String email;
 
     @NotBlank
