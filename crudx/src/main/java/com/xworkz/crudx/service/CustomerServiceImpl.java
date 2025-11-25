@@ -7,6 +7,9 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -137,6 +140,24 @@ public class CustomerServiceImpl implements CustomerService {
             BeanUtils.copyProperties(entity, dto);
             return dto;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<CustomerDTO> getAllCustomersByPagination(Integer page, Integer size) {
+        log.info("getAllCustomersByPagination method in customer service");
+        Pageable pageable = PageRequest.of(page, size);
+        Page<CustomerEntity> pageResult = customerRepository.findAll(pageable);
+        return pageResult.map(this::convertToDTO);
+    }
+    private CustomerDTO convertToDTO(CustomerEntity entity) {
+        CustomerDTO dto = new CustomerDTO();
+        dto.setCustomerId(entity.getCustomerId());
+        dto.setLastName(entity.getLastName());
+        dto.setFirstName(entity.getFirstName());
+        dto.setEmail(entity.getEmail());
+        dto.setPhoneNumber(entity.getPhoneNumber());
+        dto.setAddress(entity.getAddress());
+        return dto;
     }
 
 }

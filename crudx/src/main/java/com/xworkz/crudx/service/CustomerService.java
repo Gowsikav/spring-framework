@@ -1,6 +1,7 @@
 package com.xworkz.crudx.service;
 
 import com.xworkz.crudx.dto.CustomerDTO;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,5 +16,6 @@ public interface CustomerService {
     Boolean updateCustomersBatch(List<CustomerDTO> customerDTOs);
     Boolean deleteCustomersBatch(List<Integer> ids);
     List<CustomerDTO> getAllCustomers();
+    Page<CustomerDTO> getAllCustomersByPagination(Integer page, Integer size);
 
 }
