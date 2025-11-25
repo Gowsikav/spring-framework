@@ -2,20 +2,18 @@ package com.xworkz.crudx.restcontroller;
 
 import com.xworkz.crudx.dto.CustomerDTO;
 import com.xworkz.crudx.service.CustomerService;
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Valid;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -93,25 +91,9 @@ public class CustomerRestController {
     }
 
     @PostMapping("/customers")
-    public ResponseEntity<?> saveMultipleCustomers(@RequestBody List<CustomerDTO> customerDTOs) {
+    public ResponseEntity<?> saveMultipleCustomers(@RequestBody List<@Valid CustomerDTO> customerDTOs) {
 
         log.info("saveMultipleCustomers method in restController");
-
-        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-        List<String> errors = new ArrayList<>();
-        int index = 0;
-        for (CustomerDTO dto : customerDTOs) {
-            Set<ConstraintViolation<CustomerDTO>> violations = validator.validate(dto);
-
-            for (ConstraintViolation<CustomerDTO> v : violations) {
-                errors.add("Customer[" + index + "] -> " +
-                        v.getPropertyPath() + " : " + v.getMessage());
-            }
-            index++;
-        }
-        if (!errors.isEmpty()) {
-            return ResponseEntity.badRequest().body(errors);
-        }
 
         if(customerService.saveCustomersBatch(customerDTOs))
         return ResponseEntity.ok("Batch customers saved successfully");
@@ -157,5 +139,28 @@ public class CustomerRestController {
         }
         return ResponseEntity.ok(customers);
     }
+
+    @GetMapping("/customers-page")
+    public ResponseEntity<?> getDetailsForPagination(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "5") Integer size) {
+
+        log.info("getDetailsForPagination method in customer rest controller");
+
+        Page<CustomerDTO> customerPage = customerService.getAllCustomersByPagination(page - 1, size);
+
+        if (customerPage.isEmpty()) {
+            return ResponseEntity.badRequest().body("Unable to fetch");
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("customers", customerPage.getContent());
+        response.put("currentPage", customerPage.getNumber() + 1);
+        response.put("totalItems", customerPage.getTotalElements());
+        response.put("totalPages", customerPage.getTotalPages());
+
+        return ResponseEntity.ok(response);
+    }
+
 
 }
