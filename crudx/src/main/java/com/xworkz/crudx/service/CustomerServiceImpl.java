@@ -29,7 +29,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Boolean saveCustomerInfo(CustomerDTO customerDTO) {
-        log.info("saveCustomerInfo method in CustomerService");
         CustomerEntity customerEntity = new CustomerEntity();
         BeanUtils.copyProperties(customerDTO, customerEntity);
         try {
@@ -48,7 +47,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Optional<CustomerDTO> getCustomerById(Integer id) {
-        log.info("getCustomerById method in customerService");
         Optional<CustomerEntity> customerEntity = customerRepository.findById(id);
         if (customerEntity.isPresent()) {
             CustomerDTO customerDTO = new CustomerDTO();
@@ -59,7 +57,6 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     public Boolean updateCustomer(Integer id, CustomerDTO dto) {
-        log.info("updateCustomer method in customerService");
         Optional<CustomerEntity> opt = customerRepository.findById(id);
         if (opt.isEmpty())
             return false;
@@ -77,7 +74,6 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     public Boolean deleteCustomer(Integer id) {
-        log.info("deleteCustomer method in customerService");
         if (!customerRepository.existsById(id)) {
             return false;
         }
@@ -87,7 +83,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Transactional
     public Boolean saveCustomersBatch(List<CustomerDTO> customerDTOs) {
-        log.info("saveCustomersBatch method in customerService");
         List<CustomerEntity> entities = customerDTOs.stream().map(dto -> {
             CustomerEntity entity = new CustomerEntity();
             BeanUtils.copyProperties(dto, entity);
@@ -100,7 +95,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Transactional
     public Boolean updateCustomersBatch(List<CustomerDTO> dtos) {
-        log.info("updateCustomersBatch method in customerService");
 
         for (CustomerDTO dto : dtos) {
             Optional<CustomerEntity> opt = customerRepository.findById(dto.getCustomerId());
@@ -120,7 +114,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Transactional
     public Boolean deleteCustomersBatch(List<Integer> ids) {
-        log.info("deleteCustomersBatch method in customerService");
 
         for (Integer id : ids) {
             if (!customerRepository.existsById(id))
@@ -132,7 +125,6 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     public List<CustomerDTO> getAllCustomers() {
-        log.info("getAllCustomers method in customerService");
         List<CustomerEntity> entities = customerRepository.findAll();
 
         return entities.stream().map(entity -> {
@@ -144,7 +136,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Page<CustomerDTO> getAllCustomersByPagination(Integer page, Integer size) {
-        log.info("getAllCustomersByPagination method in customer service");
         Pageable pageable = PageRequest.of(page, size);
         Page<CustomerEntity> pageResult = customerRepository.findAll(pageable);
         return pageResult.map(this::convertToDTO);
