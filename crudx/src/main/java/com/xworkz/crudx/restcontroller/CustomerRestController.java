@@ -30,7 +30,6 @@ public class CustomerRestController {
 
     @PostMapping("/customer")
     public ResponseEntity<String> saveSingleCustomer(@Valid CustomerDTO customerDTO, BindingResult bindingResult) {
-        log.info("saveSingleCustomer method in customerRestController");
         if (bindingResult.hasErrors()) {
             log.error("fields error");
             String errors = bindingResult.getFieldErrors().stream()
@@ -46,7 +45,6 @@ public class CustomerRestController {
 
     @GetMapping("/customer/{id}")
     public ResponseEntity<String> getCustomer(@PathVariable Integer id) {
-        log.info("getCustomer method in restController");
 
         Optional<CustomerDTO> customer = customerService.getCustomerById(id);
         if (customer.isEmpty()) {
@@ -62,7 +60,6 @@ public class CustomerRestController {
             @Valid CustomerDTO customerDTO,
             BindingResult bindingResult)
     {
-        log.info("updateCustomer method in RestController");
 
         if (bindingResult.hasErrors()) {
             String errors = bindingResult.getFieldErrors().stream()
@@ -82,7 +79,6 @@ public class CustomerRestController {
     @DeleteMapping("/customer/{id}")
     public ResponseEntity<String> deleteCustomer(@PathVariable Integer id) {
 
-        log.info("deleteCustomer method in RestController");
 
         if (customerService.deleteCustomer(id))
             return ResponseEntity.ok("Customer deleted successfully");
@@ -93,8 +89,6 @@ public class CustomerRestController {
     @PostMapping("/customers")
     public ResponseEntity<?> saveMultipleCustomers(@RequestBody List<@Valid CustomerDTO> customerDTOs) {
 
-        log.info("saveMultipleCustomers method in restController");
-
         if(customerService.saveCustomersBatch(customerDTOs))
         return ResponseEntity.ok("Batch customers saved successfully");
         else return ResponseEntity.status(500).body("unable to save customers");
@@ -104,7 +98,7 @@ public class CustomerRestController {
     public ResponseEntity<String> updateMultipleCustomers(
             @Valid @RequestBody List<CustomerDTO> customerDTOs,
             BindingResult bindingResult) {
-        log.info("updateMultipleCustomers method in restController");
+
         if (bindingResult.hasErrors()) {
             String errors = bindingResult.getFieldErrors().stream()
                     .map(e -> e.getField() + " -> " + e.getDefaultMessage())
@@ -120,7 +114,6 @@ public class CustomerRestController {
 
     @DeleteMapping("/customers")
     public ResponseEntity<String> deleteMultipleCustomers(@RequestBody List<Integer> ids) {
-        log.info("deleteMultipleCustomers method in customerRestController");
 
         if (customerService.deleteCustomersBatch(ids))
             return ResponseEntity.ok("Batch customers deleted successfully");
@@ -130,8 +123,6 @@ public class CustomerRestController {
 
     @GetMapping("/customers")
     public ResponseEntity<List<CustomerDTO>> getAllCustomers() {
-
-        log.info("getAllCustomers method in rest controller");
 
         List<CustomerDTO> customers = customerService.getAllCustomers();
         if (customers.isEmpty()) {
@@ -144,8 +135,6 @@ public class CustomerRestController {
     public ResponseEntity<?> getDetailsForPagination(
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "5") Integer size) {
-
-        log.info("getDetailsForPagination method in customer rest controller");
 
         Page<CustomerDTO> customerPage = customerService.getAllCustomersByPagination(page - 1, size);
 
