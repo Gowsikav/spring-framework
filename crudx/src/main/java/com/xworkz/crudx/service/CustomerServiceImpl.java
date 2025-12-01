@@ -31,7 +31,6 @@ public class CustomerServiceImpl implements CustomerService {
     public Boolean saveCustomerInfo(CustomerDTO customerDTO) {
         CustomerEntity customerEntity = new CustomerEntity();
         BeanUtils.copyProperties(customerDTO, customerEntity);
-        try {
             customerEntity = customerRepository.save(customerEntity);
             if (customerEntity != null) {
                 log.info("data saved");
@@ -39,9 +38,6 @@ public class CustomerServiceImpl implements CustomerService {
             } else {
                 log.warn("Data not saved");
             }
-        } catch (Exception e) {
-            log.error(e.getMessage());
-        }
         return false;
     }
 

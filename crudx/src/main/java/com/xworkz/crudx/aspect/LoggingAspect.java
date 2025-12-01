@@ -2,10 +2,7 @@ package com.xworkz.crudx.aspect;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -36,4 +33,9 @@ public class LoggingAspect {
         log.info("After execution: "+joinPoint.getSignature().getName()+" method in "+joinPoint.getTarget().getClass().getSimpleName());
     }
 
+    @AfterThrowing(value = "allServiceMethods()",throwing = "exception")
+    public void logAfterThrow(JoinPoint joinPoint,Exception exception)
+    {
+        log.error("Exception in {}.{}: {}",joinPoint.getTarget().getClass().getSimpleName(),joinPoint.getSignature().getName(),exception.getMessage());
+    }
 }
